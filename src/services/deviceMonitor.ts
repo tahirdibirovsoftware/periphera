@@ -2,11 +2,17 @@ import EventEmitter from 'events';
 import { SerialPort } from 'serialport';
 import HID from 'node-hid';
 import { DeviceChangeEvent } from '../events/deviceChangeEvent';
+import { DeviceEventNames } from '../events/deviceEvents';
 import { IDeviceMonitor } from '../interfaces/IDeviceMonitor';
 
 type SerialInfo = Awaited<ReturnType<typeof SerialPort.list>>;
 type HIDInfo = Awaited<ReturnType<typeof HID.devicesAsync>>;
 
+/**
+ * @class DeviceMonitor
+ * @extends EventEmitter
+ * @implements {IDeviceMonitor}
+ */
 export class DeviceMonitor extends EventEmitter implements IDeviceMonitor {
     private serialDevices: SerialInfo = [];
     private hidDevices: HIDInfo = [];
@@ -19,6 +25,10 @@ export class DeviceMonitor extends EventEmitter implements IDeviceMonitor {
         setInterval(() => this.monitorAll(), 2000); // Adjust the interval as needed
     }
 
+    /**
+     * Monitors serial devices for changes.
+     * @returns {Promise<void>}
+     */
     public async monitorSerialDevices(): Promise<void> {
         try {
             const currentSerialDevices = await SerialPort.list();
@@ -49,6 +59,10 @@ export class DeviceMonitor extends EventEmitter implements IDeviceMonitor {
         }
     }
 
+    /**
+     * Monitors HID devices for changes.
+     * @returns {Promise<void>}
+     */
     public async monitorHID(): Promise<void> {
         try {
             const currentHIDDevices = await HID.devicesAsync();
@@ -79,7 +93,21 @@ export class DeviceMonitor extends EventEmitter implements IDeviceMonitor {
         }
     }
 
+    /**
+     * Monitors all devices for changes.
+     * @returns {Promise<void>}
+     */
     public async monitorAll(): Promise<void> {
         await Promise.all([this.monitorSerialDevices(), this.monitorHID()]);
+    }
+
+    /**
+     * Adds an event listener for the specified event.
+     * @param {DeviceEventNames} event - The event name.
+     * @param {(event: DeviceChangeEvent) => void} listener - The event listener.
+     * @returns {this}
+     */
+    public on(event: DeviceEventNames, listener: (event: DeviceChangeEvent) => void): this {
+        return super.on(event, listener);
     }
 }

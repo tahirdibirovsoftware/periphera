@@ -36,5 +36,9 @@
     "@types/serialport": "^8.0.5",
     "nodemon": "^3.1.4",
     "ts-node": "^10.9.2"
-  }
+  },
+  "files": [
+    "dist",
+    "src"
+  ]
 }
