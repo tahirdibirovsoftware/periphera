@@ -4,9 +4,8 @@ import HID from 'node-hid';
 import { DeviceChangeEvent } from '../events/deviceChangeEvent';
 import { DeviceEventNames } from '../events/deviceEvents';
 import { IDeviceMonitor } from '../interfaces/IDeviceMonitor';
+import { SerialInfo, HIDInfo } from '../types/deviceTypes';
 
-type SerialInfo = Awaited<ReturnType<typeof SerialPort.list>>;
-type HIDInfo = Awaited<ReturnType<typeof HID.devicesAsync>>;
 
 /**
  * @class DeviceMonitor
