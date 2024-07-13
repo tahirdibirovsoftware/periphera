@@ -23,7 +23,7 @@ npm install periphera
 Usage
 Here is a basic example of how to use Periphera to monitor serial and HID devices:
 
-```
+
 import { DeviceMonitor, DeviceChangeEvent } from 'periphera';
 
 const deviceMonitor = new DeviceMonitor();
@@ -31,8 +31,6 @@ const deviceMonitor = new DeviceMonitor();
 deviceMonitor.on('deviceChange', (event: DeviceChangeEvent) => {
     console.log(`${event.deviceType} device ${event.type}:`, event.device);
 });
-
-```
 
 
 API
