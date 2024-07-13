@@ -1,0 +1,31 @@
+{
+  "name": "periphera",
+  "version": "1.0.0",
+  "description": "Periphera: A sleek and efficient Node.js library for real-time monitoring of serial and HID devices. Seamlessly track the addition and removal of peripherals with ease, ensuring your applications stay in sync with connected hardware. Perfect for developers looking to integrate dynamic device management into their Node.js projects.",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "dev": "ts-node src/main.ts",
+    "test": "mocha -r ts-node/register 'test/**/*.ts'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tahirdibirovsoftware/periphera.git"
+  },
+  "keywords": [
+    "node.js",
+    "serial",
+    "HID",
+    "real-time",
+    "monitoring",
+    "peripherals"
+  ],
+  "author": "Tahir Dibirov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tahirdibirovsoftware/periphera/issues"
+  },
+  "homepage": "https://github.com/tahirdibirovsoftware/periphera#readme"
+}

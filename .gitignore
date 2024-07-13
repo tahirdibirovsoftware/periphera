@@ -1,0 +1,30 @@
+# Ignore node_modules directory
+node_modules/
+
+# Ignore build output directory
+dist/
+
+# Ignore TypeScript declaration maps
+*.d.ts.map
+
+# Ignore logs
+logs
+*.log
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore editor and IDE files
+.vscode/
+.idea/
+*.swp
+*.bak
+
+# Ignore environment variables
+.env
+
+# Ignore npm debug file
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

@@ -1,0 +1,36 @@
+# Ignore everything in the src directory
+src/
+
+# Ignore TypeScript configuration file
+tsconfig.json
+
+# Ignore lint configuration file
+tslint.json
+
+# Ignore logs
+logs
+*.log
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore editor and IDE files
+.vscode/
+.idea/
+*.swp
+*.bak
+
+# Ignore test files and directories
+test/
+__tests__/
+
+# Ignore environment variables
+.env
+
+# Ignore build scripts
+*.config.js
+
+# Ignore miscellaneous files
+*.log
+coverage/
