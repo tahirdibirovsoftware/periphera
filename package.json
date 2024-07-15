@@ -1,6 +1,6 @@
 {
   "name": "periphera",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Periphera: A sleek and efficient Node.js library for real-time monitoring of serial and HID devices. Seamlessly track the addition and removal of peripherals with ease, ensuring your applications stay in sync with connected hardware. Perfect for developers looking to integrate dynamic device management into their Node.js projects.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
