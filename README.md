@@ -18,9 +18,9 @@ npm install periphera
 First, import the necessary components from the library:
 
 ```typescript
-import { DeviceChangeEvent } from "./events/deviceChangeEvent";
-import { DeviceManager } from "./services/deviceManager";
-import { DeviceMonitor } from "./services/deviceMonitor";
+import { DeviceChangeEvent } from "periphera";
+import { DeviceManager } from "periphera";
+import { DeviceMonitor } from "periphera";
 ```
 
 ### Creating a DeviceMonitor Instance
@@ -75,9 +75,9 @@ console.log('Devices by Manufacturer:', devicesByManufacturer);
 Here is a complete example of how to use the `DeviceMonitor` and `DeviceManager` classes to monitor devices and find devices by specific properties:
 
 ```typescript
-import { DeviceChangeEvent } from "./events/deviceChangeEvent";
-import { DeviceManager } from "./services/deviceManager";
-import { DeviceMonitor } from "./services/deviceMonitor";
+import { DeviceChangeEvent } from "periphera";
+import { DeviceManager } from "periphera";
+import { DeviceMonitor } from "periphera";
 
 const monitor = new DeviceMonitor(2000, true);
 const manager = new DeviceManager(monitor);
