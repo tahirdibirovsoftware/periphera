@@ -4,8 +4,7 @@ import HID from 'node-hid';
 import { DeviceChangeEvent } from '../events/deviceChangeEvent';
 import { DeviceEventNames } from '../events/deviceEvents';
 import { IDeviceMonitor } from '../interfaces/IDeviceMonitor';
-import { SerialInfo, HIDInfo } from '../types/deviceTypes';
-
+import { SerialInfo, HIDInfo, DeviceInfo } from '../types/deviceTypes';
 
 /**
  * @class DeviceMonitor
@@ -15,13 +14,34 @@ import { SerialInfo, HIDInfo } from '../types/deviceTypes';
 export class DeviceMonitor extends EventEmitter implements IDeviceMonitor {
     private serialDevices: SerialInfo = [];
     private hidDevices: HIDInfo = [];
+    private intervalId?: NodeJS.Timeout;
+    private debounceMap: Map<string, NodeJS.Timeout> = new Map();
 
-    constructor() {
+    constructor(private monitoringInterval: number = 2000, private filterGhostDevices: boolean = false) {
         super();
-        // Initial scan
-        this.monitorAll();
-        // Periodically scan for device changes
-        setInterval(() => this.monitorAll(), 2000); // Adjust the interval as needed
+        this.initialize();
+    }
+
+    private async initialize(): Promise<void> {
+        await this.monitorAll();
+        this.intervalId = setInterval(() => this.monitorAll(), this.monitoringInterval);
+    }
+
+    private filterDevices<T extends DeviceInfo>(devices: T[]): T[] {
+        if (!this.filterGhostDevices) {
+            return devices;
+        }
+        return devices.filter(device => device.manufacturer !== undefined && device.manufacturer !== '');
+    }
+
+    private debounceEvent(deviceId: string, event: DeviceChangeEvent): void {
+        if (this.debounceMap.has(deviceId)) {
+            clearTimeout(this.debounceMap.get(deviceId)!);
+        }
+        this.debounceMap.set(deviceId, setTimeout(() => {
+            this.emit('deviceChange', event);
+            this.debounceMap.delete(deviceId);
+        }, 1000)); // Adjust the debounce interval as needed
     }
 
     /**
@@ -30,23 +50,22 @@ export class DeviceMonitor extends EventEmitter implements IDeviceMonitor {
      */
     public async monitorSerialDevices(): Promise<void> {
         try {
-            const currentSerialDevices = await SerialPort.list();
+            let currentSerialDevices: SerialInfo = await SerialPort.list();
+            currentSerialDevices = this.filterDevices(currentSerialDevices);
 
-            // Detect removed serial devices
             const removedSerialDevices = this.serialDevices.filter(device =>
                 !currentSerialDevices.some(current => current.path === device.path)
             );
-            removedSerialDevices.forEach(device => this.emit('deviceChange', {
+            removedSerialDevices.forEach(device => this.debounceEvent(device.path, {
                 type: 'removed',
                 deviceType: 'serial',
                 device
             }));
 
-            // Detect added serial devices
             const addedSerialDevices = currentSerialDevices.filter(device =>
                 !this.serialDevices.some(prev => prev.path === device.path)
             );
-            addedSerialDevices.forEach(device => this.emit('deviceChange', {
+            addedSerialDevices.forEach(device => this.debounceEvent(device.path, {
                 type: 'added',
                 deviceType: 'serial',
                 device
@@ -64,23 +83,22 @@ export class DeviceMonitor extends EventEmitter implements IDeviceMonitor {
      */
     public async monitorHID(): Promise<void> {
         try {
-            const currentHIDDevices = await HID.devicesAsync();
+            let currentHIDDevices: HIDInfo = HID.devices();
+            currentHIDDevices = this.filterDevices(currentHIDDevices);
 
-            // Detect removed HID devices
             const removedHIDDevices = this.hidDevices.filter(device =>
                 !currentHIDDevices.some(current => current.path === device.path)
             );
-            removedHIDDevices.forEach(device => this.emit('deviceChange', {
+            removedHIDDevices.forEach(device => this.debounceEvent(device.path || device.serialNumber || '', {
                 type: 'removed',
                 deviceType: 'hid',
                 device
             }));
 
-            // Detect added HID devices
             const addedHIDDevices = currentHIDDevices.filter(device =>
                 !this.hidDevices.some(prev => prev.path === device.path)
             );
-            addedHIDDevices.forEach(device => this.emit('deviceChange', {
+            addedHIDDevices.forEach(device => this.debounceEvent(device.path || device.serialNumber || '', {
                 type: 'added',
                 deviceType: 'hid',
                 device
@@ -108,5 +126,15 @@ export class DeviceMonitor extends EventEmitter implements IDeviceMonitor {
      */
     public on(event: DeviceEventNames, listener: (event: DeviceChangeEvent) => void): this {
         return super.on(event, listener);
+    }
+
+    /**
+     * Stops the device monitoring.
+     */
+    public stopMonitoring(): void {
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+            this.intervalId = undefined;
+        }
     }
 }
