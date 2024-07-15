@@ -16,9 +16,15 @@ export class DeviceManager {
      */
     public findSerialDevicesBy(property: keyof SerialInfo[0], value: string): SerialInfo {
         const lowerCaseValue = value.toLowerCase();
-        return this.deviceMonitor['serialDevices'].filter(device =>
-            device[property]?.toString().toLowerCase().includes(lowerCaseValue)
-        );
+        return this.deviceMonitor['serialDevices'].filter(device => {
+            const deviceValue = device[property];
+            if (deviceValue) {
+                const deviceValueStr = deviceValue.toString().toLowerCase();
+                console.log(`Checking device property ${property}: ${deviceValueStr}`);
+                return deviceValueStr.includes(lowerCaseValue);
+            }
+            return false;
+        });
     }
 
     /**
@@ -29,9 +35,15 @@ export class DeviceManager {
      */
     public findHIDDevicesBy(property: keyof HIDInfo[0], value: string): HIDInfo {
         const lowerCaseValue = value.toLowerCase();
-        return this.deviceMonitor['hidDevices'].filter(device =>
-            device[property]?.toString().toLowerCase().includes(lowerCaseValue)
-        );
+        return this.deviceMonitor['hidDevices'].filter(device => {
+            const deviceValue = device[property];
+            if (deviceValue) {
+                const deviceValueStr = deviceValue.toString().toLowerCase();
+                console.log(`Checking device property ${property}: ${deviceValueStr}`);
+                return deviceValueStr.includes(lowerCaseValue);
+            }
+            return false;
+        });
     }
 
     /**
@@ -42,8 +54,8 @@ export class DeviceManager {
      */
     public findAllDevicesBy(property: keyof DeviceInfo, value: string): DeviceInfo[] {
         const lowerCaseValue = value.toLowerCase();
-        const serialDevices = this.findSerialDevicesBy(property as keyof SerialInfo[0], lowerCaseValue);
-        const hidDevices = this.findHIDDevicesBy(property as keyof HIDInfo[0], lowerCaseValue);
+        const serialDevices = this.findSerialDevicesBy(property as keyof SerialInfo[0], value);
+        const hidDevices = this.findHIDDevicesBy(property as keyof HIDInfo[0], value);
         return [...serialDevices, ...hidDevices];
     }
 
