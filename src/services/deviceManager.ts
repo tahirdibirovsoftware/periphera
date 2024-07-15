@@ -1,7 +1,8 @@
 import { DeviceMonitor } from './deviceMonitor';
 import { SerialInfo, HIDInfo, DeviceInfo } from '../types/deviceTypes';
+import { IDeviceManager } from '../interfaces/IDeviceManager';
 
-export class DeviceManager {
+export class DeviceManager implements IDeviceManager {
     private deviceMonitor: DeviceMonitor;
 
     constructor(deviceMonitor: DeviceMonitor) {
@@ -27,7 +28,7 @@ export class DeviceManager {
      * @param {string} value - The value to match.
      * @returns {SerialInfo}
      */
-    private findSerialDevicesBy(property: keyof SerialInfo[0], value: string): SerialInfo {
+    public findSerialDevicesBy(property: keyof SerialInfo[0], value: string): SerialInfo {
         const lowerCaseValue = value.toLowerCase();
         return this.deviceMonitor.getSerialDevices().filter(device =>
             device[property]?.toString().toLowerCase().includes(lowerCaseValue)
@@ -40,7 +41,7 @@ export class DeviceManager {
      * @param {string} value - The value to match.
      * @returns {HIDInfo}
      */
-    private findHIDDevicesBy(property: keyof HIDInfo[0], value: string): HIDInfo {
+    public findHIDDevicesBy(property: keyof HIDInfo[0], value: string): HIDInfo {
         const lowerCaseValue = value.toLowerCase();
         return this.deviceMonitor.getHIDDevices().filter(device =>
             device[property]?.toString().toLowerCase().includes(lowerCaseValue)
