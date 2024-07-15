@@ -19,11 +19,19 @@ export class DeviceMonitor extends EventEmitter implements IDeviceMonitor {
 
     constructor(private monitoringInterval: number = 2000, private filterGhostDevices: boolean = false) {
         super();
-        this.initialize();
     }
 
-    private async initialize(): Promise<void> {
-        await this.monitorAll();
+    /**
+     * Initializes the device lists synchronously.
+     * @returns {Promise<void>}
+     */
+    public async initialize(): Promise<void> {
+        this.serialDevices = this.filterDevices(await SerialPort.list());
+        this.hidDevices = this.filterDevices(HID.devices() as HIDInfo);
+        this.startMonitoring();
+    }
+
+    private startMonitoring(): void {
         this.intervalId = setInterval(() => this.monitorAll(), this.monitoringInterval);
     }
 
@@ -83,7 +91,7 @@ export class DeviceMonitor extends EventEmitter implements IDeviceMonitor {
      */
     public async monitorHID(): Promise<void> {
         try {
-            let currentHIDDevices: HIDInfo = HID.devices();
+            let currentHIDDevices: HIDInfo = HID.devices() as HIDInfo;
             currentHIDDevices = this.filterDevices(currentHIDDevices);
 
             const removedHIDDevices = this.hidDevices.filter(device =>
@@ -136,5 +144,21 @@ export class DeviceMonitor extends EventEmitter implements IDeviceMonitor {
             clearInterval(this.intervalId);
             this.intervalId = undefined;
         }
+    }
+
+    /**
+     * Gets the current list of monitored serial devices.
+     * @returns {SerialInfo}
+     */
+    public getSerialDevices(): SerialInfo {
+        return this.serialDevices;
+    }
+
+    /**
+     * Gets the current list of monitored HID devices.
+     * @returns {HIDInfo}
+     */
+    public getHIDDevices(): HIDInfo {
+        return this.hidDevices;
     }
 }
