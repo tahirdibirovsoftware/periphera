@@ -80,5 +80,3 @@ Tahir Dibirov
 
 - **Repository**: [https://github.com/tahirdibirovsoftware/periphera](https://github.com/tahirdibirovsoftware/periphera)
 - **Keywords**: `node.js`, `serial`, `HID`, `real-time`, `monitoring`, `peripherals`
-
-This README is structured to provide a clear and comprehensive overview of your library, including installation, usage, API details, project structure, contribution guidelines, license information, and contact details for reporting issues.
