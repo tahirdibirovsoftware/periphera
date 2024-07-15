@@ -6,11 +6,12 @@ import { SerialInfo, HIDInfo, DeviceInfo } from '../types/deviceTypes';
  * @interface IDeviceMonitor
  */
 export interface IDeviceMonitor {
-    on(event: DeviceEventNames, listener: (event: DeviceChangeEvent | DeviceInfo) => void): this;
+    on(event: DeviceEventNames, listener: (event: DeviceChangeEvent) => void): this;
+    initialize(): Promise<void>;
     monitorSerialDevices(): Promise<void>;
     monitorHID(): Promise<void>;
     monitorAll(): Promise<void>;
     stopMonitoring(): void;
     getSerialDevices(): SerialInfo;
-    getHIDDevices(): HIDInfo;   
+    getHIDDevices(): HIDInfo;
 }

@@ -48,6 +48,7 @@ export class DeviceMonitor extends EventEmitter implements IDeviceMonitor {
         }
         this.debounceMap.set(deviceId, setTimeout(() => {
             this.emit('deviceChange', event);
+            this.emit(`${event.type}:${event.deviceType}` as DeviceEventNames, event);
             this.debounceMap.delete(deviceId);
         }, 1000)); // Adjust the debounce interval as needed
     }
